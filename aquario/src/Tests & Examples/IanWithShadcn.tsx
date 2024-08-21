@@ -1,12 +1,26 @@
 import React from 'react';
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+  } from "@/components/ui/card";
+  import { Button } from "@/components/ui/button"
+  import Image from 'next/image';
+  import ian from "/public/ian.jpeg" // Importing from SHADCN
+  
+  
 
-const IanWithTailwind: React.FC = () => {
+const IanWithShadcn: React.FC = () => {
   return (
-    //outerbox
-    <div className="grid grid-cols-[100px_1fr_200px] border-[1px] border-[#b8b8b8] rounded-lg w-[1000px]">
+        <Card>
+    <CardContent>
+    <div className="grid grid-cols-[100px_1fr_200px] w-[1000px]">
        {/* image */}
         <div className='flex justify-center items-center'>
-            <img className="w-[60px] h-[60px] rounded-full" src="public/images/ian.jpeg." alt="profile picture" />
+            <Image width={60} height={60} className="w-[60px] h-[60px] rounded-full" src={ian.src} alt="profile picture" />
         </div>
         {/* name */}
         <div className='flex flex-col justify-start items-start'>
@@ -22,10 +36,13 @@ const IanWithTailwind: React.FC = () => {
         </div>
         {/* button */}
         <div className='flex justify-center items-center'>
-            <button className="bg-black text-white w-[100px] h-[30px] border-0 rounded-[1.2rem] text-basis font-bold">Site</button>
+        <Button className='w-[100px]'>Site</Button>
         </div>
     </div>
+    </CardContent>
+    </Card>
+
   );
 };
 
-export default IanWithTailwind;
+export default IanWithShadcn;
