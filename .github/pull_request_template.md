@@ -2,7 +2,7 @@
 
 <!--
 
-Brief description of what this PR does. Please follow the template for all applicable sections. Feel free to change, add or edit if NEEDED. For writing a good description, try to think of these points:
+Brief description of what this PR does. Please follow the template for all applicable sections. Feel free to change, add or edit if needed. For writing a good description, try to think of these points:
 
 - What is the problem/motivation for this?
 - What was your solution?
