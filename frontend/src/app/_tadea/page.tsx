@@ -44,7 +44,8 @@ export default function TadeaPage() {
   const { token } = useAuth();
 
   const isAdmin = !!(
-    user && (user.permissoes.includes("ADMIN") || user.papelPlataforma === "MASTER_ADMIN")
+    user &&
+    (user.permissoes.includes("ADMIN") || user.papelPlataforma === "MASTER_ADMIN")
   );
 
   const handleStatusChange = async (id: string, status: StatusItem) => {
