@@ -23,6 +23,7 @@ export class AuthenticateController {
         {
           papel: usuario.props.papel,
           permissoes: usuario.props.permissoes,
+          papelPlataforma: usuario.props.papelPlataforma,
         },
         process.env.JWT_SECRET as string,
         {

@@ -3,6 +3,9 @@ import { verify } from 'jsonwebtoken';
 
 interface IPayload {
   sub: string;
+  papelPlataforma?: 'USER' | 'MASTER_ADMIN';
+  papel?: string;
+  permissoes?: string[];
 }
 
 export function ensureAuthenticated(request: Request, response: Response, next: NextFunction) {
@@ -12,13 +15,18 @@ export function ensureAuthenticated(request: Request, response: Response, next: 
     return response.status(401).json({ message: 'Token de autenticação não fornecido.' });
   }
 
-  const [, token] = authToken.split(' ');
+  const [scheme, token] = authToken.split(' ');
+
+  if (!token || scheme !== 'Bearer') {
+    return response.status(401).json({ message: 'Token de autenticação inválido.' });
+  }
 
   try {
-    const { sub } = verify(token, process.env.JWT_SECRET as string) as IPayload;
+    const { sub, papelPlataforma } = verify(token, process.env.JWT_SECRET as string) as IPayload;
 
     request.usuario = {
       id: sub,
+      papelPlataforma: papelPlataforma ?? 'USER',
     };
 
     return next();
