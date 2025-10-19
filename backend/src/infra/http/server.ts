@@ -1,5 +1,8 @@
 import express, { Express, Request, Response } from "express";
 import cors from "cors";
+import helmet from "helmet";
+import { env } from "../config/env";
+import { generalLimiter } from "./middlewares/rateLimiter";
 import { publicacoesRouter } from "./routes/publicacoes.routes";
 import { achadosEPerdidosRouter } from "./routes/achados-e-perdidos.routes";
 import { authRouter } from "./routes/auth.routes";
@@ -13,9 +16,23 @@ import { searchRoutes } from "./routes/search.routes";
 import { guiasRouter } from "./routes/guias.routes";
 
 const app: Express = express();
-const port = process.env.PORT || 3001;
+const port = env.PORT || 3001;
 
-app.use(cors());
+// Security headers
+app.use(helmet());
+
+// CORS configuration with specific origin
+const corsOrigins = env.CORS_ORIGIN.split(',').map(origin => origin.trim());
+app.use(
+  cors({
+    origin: corsOrigins,
+    credentials: true,
+  })
+);
+
+// Apply general rate limiting to all routes
+app.use(generalLimiter);
+
 app.use(express.json());
 
 app.use("/publicacoes", publicacoesRouter);

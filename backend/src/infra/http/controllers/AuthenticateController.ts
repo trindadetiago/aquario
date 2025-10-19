@@ -2,7 +2,8 @@ import { Request, Response } from 'express';
 import { z } from 'zod';
 import { AuthenticateUseCase } from '@/application/usuarios/use-cases/AuthenticateUseCase';
 import { PrismaUsuariosRepository } from '@/infra/database/prisma/repositories/PrismaUsuariosRepository';
-import { sign } from 'jsonwebtoken';
+import { sign, Secret } from 'jsonwebtoken';
+import { env } from '@/infra/config/env';
 
 const authenticateBodySchema = z.object({
   email: z.string().email(),
@@ -24,10 +25,11 @@ export class AuthenticateController {
           papel: usuario.props.papel,
           permissoes: usuario.props.permissoes,
         },
-        process.env.JWT_SECRET as string,
+        env.JWT_SECRET as Secret,
         {
           subject: usuario.id,
-          expiresIn: '1d',
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          expiresIn: env.JWT_EXPIRES_IN as any,
         }
       );
 

@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { verify } from 'jsonwebtoken';
+import { verify, Secret } from 'jsonwebtoken';
+import { env } from '@/infra/config/env';
 
 interface IPayload {
   sub: string;
@@ -15,7 +16,7 @@ export function ensureAuthenticated(request: Request, response: Response, next: 
   const [, token] = authToken.split(' ');
 
   try {
-    const { sub } = verify(token, process.env.JWT_SECRET as string) as IPayload;
+    const { sub } = verify(token, env.JWT_SECRET as Secret) as IPayload;
 
     request.usuario = {
       id: sub,

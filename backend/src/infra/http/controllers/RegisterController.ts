@@ -7,9 +7,13 @@ import { PrismaCursosRepository } from '../../database/prisma/repositories/Prism
 import { PapelUsuario } from '@prisma/client';
 
 const registerBodySchema = z.object({
-  nome: z.string(),
-  email: z.string().email(),
-  senha: z.string().min(6),
+  nome: z.string().min(3, 'Nome deve ter pelo menos 3 caracteres'),
+  email: z.string().email('Email inválido'),
+  senha: z.string()
+    .min(8, 'Senha deve ter pelo menos 8 caracteres')
+    .regex(/[A-Z]/, 'Senha deve conter pelo menos uma letra maiúscula')
+    .regex(/[a-z]/, 'Senha deve conter pelo menos uma letra minúscula')
+    .regex(/[0-9]/, 'Senha deve conter pelo menos um número'),
   papel: z.nativeEnum(PapelUsuario),
   centroId: z.string().uuid(),
   bio: z.string().optional(),
