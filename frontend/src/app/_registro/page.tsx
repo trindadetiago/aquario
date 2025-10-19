@@ -13,6 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import Image from "next/image";
+import { env } from "@/lib/env";
 
 // Tipos para os dados do backend
 type Centro = {
@@ -38,13 +39,77 @@ export default function Registro() {
   const [cursos, setCursos] = useState<Curso[]>([]);
 
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [passwordStrength, setPasswordStrength] = useState<{
+    score: number;
+    message: string;
+    color: string;
+  }>({ score: 0, message: "", color: "" });
   const router = useRouter();
+
+  const checkPasswordStrength = (password: string) => {
+    let score = 0;
+    let message = "";
+    let color = "";
+
+    if (password.length === 0) {
+      setPasswordStrength({ score: 0, message: "", color: "" });
+      return;
+    }
+
+    if (password.length < 8) {
+      setPasswordStrength({
+        score: 0,
+        message: "Senha muito curta (mínimo 8 caracteres)",
+        color: "text-red-500",
+      });
+      return;
+    }
+
+    if (password.length >= 8) {
+      score++;
+    }
+    if (password.match(/[a-z]/)) {
+      score++;
+    }
+    if (password.match(/[A-Z]/)) {
+      score++;
+    }
+    if (password.match(/[0-9]/)) {
+      score++;
+    }
+    if (password.match(/[^a-zA-Z0-9]/)) {
+      score++;
+    }
+
+    switch (score) {
+      case 0:
+      case 1:
+      case 2:
+        message = "Senha fraca";
+        color = "text-red-500";
+        break;
+      case 3:
+        message = "Senha média";
+        color = "text-yellow-500";
+        break;
+      case 4:
+        message = "Senha forte";
+        color = "text-green-500";
+        break;
+      case 5:
+        message = "Senha muito forte";
+        color = "text-green-600";
+        break;
+    }
+
+    setPasswordStrength({ score, message, color });
+  };
 
   useEffect(() => {
     const fetchCentros = async () => {
       try {
-        // TODO: Substituir pela rota real da API que lista os centros
-        const response = await fetch("http://localhost:3001/centros");
+        const response = await fetch(`${env.apiUrl}/centros`);
         if (!response.ok) {
           throw new Error("Falha ao buscar centros");
         }
@@ -65,8 +130,7 @@ export default function Registro() {
     }
     const fetchCursos = async () => {
       try {
-        // TODO: Substituir pela rota real da API que lista cursos de um centro
-        const response = await fetch(`http://localhost:3001/centros/${centroId}/cursos`);
+        const response = await fetch(`${env.apiUrl}/centros/${centroId}/cursos`);
         if (!response.ok) {
           throw new Error("Falha ao buscar cursos");
         }
@@ -83,8 +147,31 @@ export default function Registro() {
     e.preventDefault();
     setError(null);
 
+    // Client-side validation
+    if (senha.length < 8) {
+      setError("Senha deve ter pelo menos 8 caracteres");
+      return;
+    }
+
+    if (!/[A-Z]/.test(senha)) {
+      setError("Senha deve conter pelo menos uma letra maiúscula");
+      return;
+    }
+
+    if (!/[a-z]/.test(senha)) {
+      setError("Senha deve conter pelo menos uma letra minúscula");
+      return;
+    }
+
+    if (!/[0-9]/.test(senha)) {
+      setError("Senha deve conter pelo menos um número");
+      return;
+    }
+
+    setIsLoading(true);
+
     try {
-      const response = await fetch("http://localhost:3001/register", {
+      const response = await fetch(`${env.apiUrl}/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -109,6 +196,8 @@ export default function Registro() {
       } else {
         setError("Ocorreu um erro desconhecido");
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -158,9 +247,18 @@ export default function Registro() {
                   id="password"
                   type="password"
                   value={senha}
-                  onChange={e => setSenha(e.target.value)}
+                  onChange={e => {
+                    setSenha(e.target.value);
+                    checkPasswordStrength(e.target.value);
+                  }}
                   required
                 />
+                {senha && passwordStrength.message && (
+                  <p className={`text-xs ${passwordStrength.color}`}>{passwordStrength.message}</p>
+                )}
+                <p className="text-xs text-gray-500">
+                  Mínimo 8 caracteres, incluindo maiúscula, minúscula e número
+                </p>
               </div>
               <div className="space-y-2">
                 <Label>Você é?</Label>
@@ -214,8 +312,12 @@ export default function Registro() {
                 </div>
               )}
               {error && <p className="text-sm text-red-500 text-center">{error}</p>}
-              <Button type="submit" className="w-full">
-                Registrar
+              <Button
+                type="submit"
+                disabled={isLoading}
+                className="w-full disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isLoading ? "Registrando..." : "Registrar"}
               </Button>
             </div>
             <p className="text-center text-sm">

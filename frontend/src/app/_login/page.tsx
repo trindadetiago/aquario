@@ -7,20 +7,23 @@ import { useAuth } from "@/contexts/auth-context";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { env } from "@/lib/env";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { login } = useAuth();
 
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
     setError(null);
+    setIsLoading(true);
 
     try {
-      const response = await fetch("http://localhost:3001/login", {
+      const response = await fetch(`${env.apiUrl}/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -42,6 +45,8 @@ export default function Login() {
       } else {
         setError("Ocorreu um erro desconhecido");
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -115,9 +120,10 @@ export default function Login() {
 
             <Button
               type="submit"
-              className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors"
+              disabled={isLoading}
+              className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Entrar
+              {isLoading ? "Entrando..." : "Entrar"}
             </Button>
           </form>
 

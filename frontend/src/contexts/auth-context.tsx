@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { env } from "@/lib/env";
 
 type Centro = {
   id: string;
@@ -55,7 +56,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (token) {
       const fetchUser = async () => {
         try {
-          const response = await fetch("http://localhost:3001/me", {
+          const response = await fetch(`${env.apiUrl}/me`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
