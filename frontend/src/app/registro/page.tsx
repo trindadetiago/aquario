@@ -71,7 +71,7 @@ export default function Registro() {
           throw new Error("Falha ao buscar cursos");
         }
         const data = await response.json();
-        setCursos(data);
+        setCursos([{ id: "CC", nome: "CC" }]);
       } catch (err) {
         console.error(err);
       }
