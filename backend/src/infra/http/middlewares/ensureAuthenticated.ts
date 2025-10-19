@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { verify } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import { env } from '@/config/env';
 
 interface IPayload {
@@ -23,7 +23,7 @@ export function ensureAuthenticated(request: Request, response: Response, next: 
   }
 
   try {
-    const { sub, papelPlataforma } = verify(token, env.JWT_SECRET) as IPayload;
+    const { sub, papelPlataforma } = jwt.verify(token, env.JWT_SECRET) as IPayload;
 
     request.usuario = {
       id: sub,
