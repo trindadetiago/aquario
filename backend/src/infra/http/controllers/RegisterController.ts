@@ -65,7 +65,7 @@ export class RegisterController {
       if (error instanceof z.ZodError) {
         registerLogger.warn('Falha de validação no registro de usuário', {
           email: request.body?.email,
-          issues: error.errors.map(issue => issue.message),
+          issues: error.issues.map(issue => issue.message),
         });
         return response.status(400).json({ message: 'Validation error.', issues: error.format() });
       }

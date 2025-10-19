@@ -44,7 +44,7 @@ export class AuthenticateController {
     } catch (error) {
       if (error instanceof z.ZodError) {
         authLogger.warn('Falha de validação ao autenticar usuário', {
-          issues: error.errors.map(issue => issue.message),
+          issues: error.issues.map(issue => issue.message),
         });
         return response.status(400).json({ message: 'Validation error.', issues: error.format() });
       }
