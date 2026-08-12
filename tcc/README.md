@@ -1,7 +1,11 @@
-# Apresentação de defesa — TCC
+# TCC — Aquário
 
-Slides da defesa do trabalho de conclusão de curso sobre o Aquário,
-apresentada em 7 de agosto de 2026 no Centro de Informática da UFPB.
+Monografia e slides da defesa do trabalho de conclusão de curso sobre o
+Aquário, apresentada em 7 de agosto de 2026 no Centro de Informática da
+UFPB e aprovada com nota 10,0.
+
+`monografia.pdf` é a versão final do texto — 78 folhas, com a ata da defesa
+assinada pela banca.
 
 ## Como abrir
 
@@ -23,6 +27,7 @@ build. Basta abrir no navegador:
 
 ```
 tcc/
+├── monografia.pdf         a versão final do texto
 ├── apresentacao/
 │   ├── slides.html        o deck (60 slides)
 │   ├── slides.tex         versão anterior, em Beamer
